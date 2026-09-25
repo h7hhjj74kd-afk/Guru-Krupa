@@ -47,7 +47,6 @@
         linear-gradient(145deg, #030303 0%, #0a0a0a 48%, #020202 100%);
     }
 
-    /* Very subtle premium texture — no photos or external images */
     .page::before {
       content: "";
       position: absolute;
@@ -186,6 +185,7 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 14px;
+      position: relative;
     }
 
     .link {
@@ -207,6 +207,8 @@
       background: rgba(255,255,255,.025);
       transition: .3s ease;
       backdrop-filter: blur(8px);
+      cursor: pointer;
+      font-family: inherit;
     }
 
     .link span {
@@ -214,7 +216,8 @@
       font-size: 15px;
     }
 
-    .link:hover {
+    .link:hover,
+    .link.active {
       color: #080808;
       background: var(--gold-light);
       border-color: var(--gold-light);
@@ -222,8 +225,59 @@
       box-shadow: 0 12px 35px rgba(217,164,65,.18);
     }
 
-    .link:hover span {
+    .link:hover span,
+    .link.active span {
       color: #080808;
+    }
+
+    /* Contact Dropdown Styles */
+    .contact-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .contact-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f0f0f;
+      border: 1px solid rgba(217,164,65,.6);
+      border-radius: 4px;
+      padding: 8px;
+      min-width: 180px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      z-index: 50;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .contact-dropdown.open {
+      display: flex;
+    }
+
+    .contact-dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: .08em;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+      border-radius: 2px;
+      transition: .2s ease;
+    }
+
+    .contact-dropdown-item:hover {
+      background: rgba(217,164,65,.15);
+      border-color: var(--gold);
+      color: var(--gold-light);
     }
 
     .line {
@@ -301,9 +355,17 @@
         gap: 10px;
       }
 
+      .contact-wrapper {
+        width: min(300px, 90vw);
+      }
+
       .link {
         width: min(300px, 90vw);
         height: 48px;
+      }
+
+      .contact-dropdown {
+        width: 100%;
       }
 
       .line {
@@ -327,13 +389,20 @@
 
       <nav class="links" aria-label="Contact links">
         
-        <a class="link" href="tel:+916354714783" aria-label="Contact">
-          <span>✆</span> Contact
-        </a>
-
-        <a class="link" href="tel:+919265108548" aria-label="Contact">
-          <span>✆</span> Contact
-        </a>
+        <!-- Single Contact Button with Popover -->
+        <div class="contact-wrapper">
+          <button class="link" id="contactToggle" aria-haspopup="true" aria-expanded="false" type="button">
+            <span>✆</span> Contact
+          </button>
+          <div class="contact-dropdown" id="contactMenu">
+            <a class="contact-dropdown-item" href="tel:+916354714783">
+              <span>✆</span> 63547 14783
+            </a>
+            <a class="contact-dropdown-item" href="tel:+919265108548">
+              <span>✆</span> 92651 08548
+            </a>
+          </div>
+        </div>
 
         <a class="link" href="https://www.instagram.com/gurukrupa_carbody_melusan?stkn=cWtjMnpsNWwzdjFi" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
           <span>◎</span> Instagram
@@ -348,5 +417,26 @@
       <div class="bottom">Guru Krupa · Raval Ranchhod</div>
     </section>
   </main>
+
+  <script>
+    const contactToggle = document.getElementById('contactToggle');
+    const contactMenu = document.getElementById('contactMenu');
+
+    contactToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = contactMenu.classList.toggle('open');
+      contactToggle.classList.toggle('active', isOpen);
+      contactToggle.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Close the dropdown when clicking anywhere outside
+    document.addEventListener('click', (e) => {
+      if (!contactMenu.contains(e.target) && !contactToggle.contains(e.target)) {
+        contactMenu.classList.remove('open');
+        contactToggle.classList.remove('active');
+        contactToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
 </body>
 </html>
